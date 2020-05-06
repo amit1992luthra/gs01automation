@@ -1,0 +1,39 @@
+{
+  "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+  "name" : "timeline",
+  "children" : [ {
+    "name" : "IRIS-CSG-1498",
+    "children" : [ {
+      "name" : "27412@IRIS-CSG-1498.main(1)",
+      "children" : [ {
+        "name" : "01_GS one Login Scenario",
+        "uid" : "1d3db39dc3762fd6",
+        "parentUid" : "2ae041a90bacf1c06c0ad389eae39982",
+        "status" : "skipped",
+        "time" : {
+          "start" : 1588760940997,
+          "stop" : 1588760951250,
+          "duration" : 10253
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "02_GS one Login Scenario",
+        "uid" : "85b7f7537a5c4cd1",
+        "parentUid" : "2ae041a90bacf1c06c0ad389eae39982",
+        "status" : "skipped",
+        "time" : {
+          "start" : 1588760951543,
+          "stop" : 1588760952854,
+          "duration" : 1311
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ae041a90bacf1c06c0ad389eae39982"
+    } ],
+    "uid" : "6c927029dddd2c5cf29f699be35fd31f"
+  } ]
+}

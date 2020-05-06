@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application name="GS1">
+<Page name="LoginPage">
+   <Locator name ="username" Type ="XPath" Value ="//input[@name='username']"/>
+   <Locator name ="password" Type ="Name" Value ="password"/>
+   <Locator name ="submit" Type ="XPath" Value ="//input[@type='submit']"/>"
+ </Page>
+ <Page name="Dashboard">
+    <Locator name ="submit1" Type ="XPath" Value ="/html/body/div[3]/div/div/div[2]/form/div[2]/input"/>
+ </Page>
+</Application>

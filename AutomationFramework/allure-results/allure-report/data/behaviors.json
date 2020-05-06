@@ -1,0 +1,43 @@
+{
+  "uid" : "b1a8273437954620fa374b796ffaacdd",
+  "name" : "behaviors",
+  "children" : [ {
+    "name" : "Login to GS1",
+    "children" : [ {
+      "name" : "01_GS one Login Scenario",
+      "children" : [ {
+        "name" : "01_GS one Login Scenario",
+        "uid" : "1d3db39dc3762fd6",
+        "parentUid" : "6c047aadeea051c0a75f39a44fcaca3d",
+        "status" : "skipped",
+        "time" : {
+          "start" : 1588760940997,
+          "stop" : 1588760951250,
+          "duration" : 10253
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "6c047aadeea051c0a75f39a44fcaca3d"
+    }, {
+      "name" : "02_GS one Login Scenario",
+      "children" : [ {
+        "name" : "02_GS one Login Scenario",
+        "uid" : "85b7f7537a5c4cd1",
+        "parentUid" : "a129b2a81fc405daf57c6db8dd870f0a",
+        "status" : "skipped",
+        "time" : {
+          "start" : 1588760951543,
+          "stop" : 1588760952854,
+          "duration" : 1311
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a129b2a81fc405daf57c6db8dd870f0a"
+    } ],
+    "uid" : "22d407d1817eac5a5de20ba05689405d"
+  } ]
+}

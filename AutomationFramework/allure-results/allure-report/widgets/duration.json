@@ -1,0 +1,21 @@
+[ {
+  "uid" : "1d3db39dc3762fd6",
+  "name" : "01_GS one Login Scenario",
+  "time" : {
+    "start" : 1588760940997,
+    "stop" : 1588760951250,
+    "duration" : 10253
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+}, {
+  "uid" : "85b7f7537a5c4cd1",
+  "name" : "02_GS one Login Scenario",
+  "time" : {
+    "start" : 1588760951543,
+    "stop" : 1588760952854,
+    "duration" : 1311
+  },
+  "status" : "skipped",
+  "severity" : "normal"
+} ]

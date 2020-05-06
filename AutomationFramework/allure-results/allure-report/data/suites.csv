@@ -1,0 +1,3 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"skipped","Wed May 06 15:59:00 IST 2020","Wed May 06 15:59:11 IST 2020","10253","","Login to GS1","","01_GS one Login Scenario","","01_GS one Login Scenario",""
+"skipped","Wed May 06 15:59:11 IST 2020","Wed May 06 15:59:12 IST 2020","1311","","Login to GS1","","02_GS one Login Scenario","","02_GS one Login Scenario",""

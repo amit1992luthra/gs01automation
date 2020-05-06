@@ -1,0 +1,158 @@
+{
+  "uid" : "1d3db39dc3762fd6",
+  "name" : "01_GS one Login Scenario",
+  "historyId" : "1970eb26be6f76f38b1319b44abb7245",
+  "time" : {
+    "start" : 1588760940997,
+    "stop" : 1588760951250,
+    "duration" : 10253
+  },
+  "status" : "skipped",
+  "statusMessage" : "Unimplemented steps were found",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ ],
+  "testStage" : {
+    "status" : "skipped",
+    "statusMessage" : "Unimplemented steps were found",
+    "steps" : [ {
+      "name" : "Hooks.beforeScenario()",
+      "time" : {
+        "start" : 1588760941004,
+        "stop" : 1588760941006,
+        "duration" : 2
+      },
+      "status" : "passed",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : false,
+      "stepsCount" : 0,
+      "hasContent" : false
+    }, {
+      "name" : "Given  user is already on Login Page",
+      "time" : {
+        "start" : 1588760941016,
+        "stop" : 1588760951121,
+        "duration" : 10105
+      },
+      "status" : "passed",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : false,
+      "stepsCount" : 0,
+      "hasContent" : false
+    }, {
+      "name" : "Then  user enters \"testuser009\" and \"Password@123\"",
+      "time" : {
+        "start" : 1588760951143,
+        "stop" : 1588760951227,
+        "duration" : 84
+      },
+      "status" : "failed",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : false,
+      "stepsCount" : 0,
+      "hasContent" : false
+    }, {
+      "name" : "Then  user clicks on login button",
+      "time" : {
+        "start" : 1588760951229,
+        "stop" : 1588760951239,
+        "duration" : 10
+      },
+      "status" : "skipped",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : false,
+      "stepsCount" : 0,
+      "hasContent" : false
+    }, {
+      "name" : "Hooks.afterScenario(Scenario)",
+      "time" : {
+        "start" : 1588760951247,
+        "stop" : 1588760951247,
+        "duration" : 0
+      },
+      "status" : "passed",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : false,
+      "stepsCount" : 0,
+      "hasContent" : false
+    }, {
+      "name" : "user is on home page",
+      "time" : {
+        "start" : 1588760951248,
+        "stop" : 1588760951248,
+        "duration" : 0
+      },
+      "status" : "skipped",
+      "statusMessage" : "Unimplemented step",
+      "steps" : [ ],
+      "attachments" : [ ],
+      "parameters" : [ ],
+      "attachmentsCount" : 0,
+      "shouldDisplayMessage" : true,
+      "stepsCount" : 0,
+      "hasContent" : true
+    } ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : true,
+    "stepsCount" : 6,
+    "hasContent" : true
+  },
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "feature",
+    "value" : "Login to GS1"
+  }, {
+    "name" : "story",
+    "value" : "01_GS one Login Scenario"
+  }, {
+    "name" : "tag",
+    "value" : "current"
+  }, {
+    "name" : "host",
+    "value" : "IRIS-CSG-1498"
+  }, {
+    "name" : "package",
+    "value" : "Login to GS1"
+  }, {
+    "name" : "suite",
+    "value" : "Login to GS1"
+  }, {
+    "name" : "testClass",
+    "value" : "01_GS one Login Scenario"
+  }, {
+    "name" : "thread",
+    "value" : "27412@IRIS-CSG-1498.main(1)"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ "current" ]
+  },
+  "source" : "1d3db39dc3762fd6.json",
+  "parameterValues" : [ ]
+}

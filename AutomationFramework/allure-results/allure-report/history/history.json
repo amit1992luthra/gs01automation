@@ -1,0 +1,42 @@
+{
+  "afd5b77ae6ffcd2b783ecddb921c99df" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 1,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "85b7f7537a5c4cd1",
+      "status" : "skipped",
+      "statusDetails" : "Unimplemented steps were found",
+      "time" : {
+        "start" : 1588760951543,
+        "stop" : 1588760952854,
+        "duration" : 1311
+      }
+    } ]
+  },
+  "1970eb26be6f76f38b1319b44abb7245" : {
+    "statistic" : {
+      "failed" : 0,
+      "broken" : 0,
+      "skipped" : 1,
+      "passed" : 0,
+      "unknown" : 0,
+      "total" : 1
+    },
+    "items" : [ {
+      "uid" : "1d3db39dc3762fd6",
+      "status" : "skipped",
+      "statusDetails" : "Unimplemented steps were found",
+      "time" : {
+        "start" : 1588760940997,
+        "stop" : 1588760951250,
+        "duration" : 10253
+      }
+    } ]
+  }
+}
