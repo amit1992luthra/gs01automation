@@ -5,6 +5,14 @@
    <Locator name ="password" Type ="Name" Value ="password"/>
    <Locator name ="submit" Type ="XPath" Value ="//input[@type='submit']"/>"
  </Page>
+ 
+ <Page name="HomePage">
+   <Locator name ="button" Type ="XPath" Value ="//input[@name='username']"/>
+  
+ </Page>
+ 
+ 
+ 
  <Page name="Dashboard">
     <Locator name ="submit1" Type ="XPath" Value ="/html/body/div[3]/div/div/div[2]/form/div[2]/input"/>
  </Page>
