@@ -1,40 +1,42 @@
 package com.seleniumFuctions;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
+import org.junit.Assert;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.core.BaseVariables;
 import com.core.CommonUtils;
 import com.core.ReadWriteUtils;
-
-import io.qameta.allure.Allure;
-import org.junit.*;
-
 import com.core.*;
-public class SeleniumFunctions{
+public class SeleniumFunctions {
 	WebDriverWait wait ;
 	WebDriver driver ;
-	AssertUtils assertUtils = AssertUtils.getInstance();
+	
 	public SeleniumFunctions(){
 		
 		this.driver=BaseVariables.getInstance().getWebdriver();
 		this.wait = new WebDriverWait(driver, TestProperties.getInstance().getwaitTime());
 	}
 	
-	String LocatorValue ="";
+	String LocValue ="";
 	
 	private static final Logger LOGGER = Logger.getLogger(CommonUtils.class.getName());
 	private String PageName = "";
@@ -54,17 +56,21 @@ public class SeleniumFunctions{
 		RWU.ReadLocators();
 	}
 	
-	
-	public Boolean ClickElement(String elementName) throws Exception
+	public Boolean clickElement(String elmtName) throws Exception
     {
 		Boolean Clicked = false;
         try
-        {
-        	WebElement El = wait.until(ExpectedConditions.elementToBeClickable(GetElement(elementName)));
+        {            
+            WebElement El = wait.until(ExpectedConditions.elementToBeClickable(getElement(elmtName)));
+            El.click();
+
+
+            Clicked = true;
+            Thread.sleep(4000);
         }
         catch (ElementClickInterceptedException Iex)
         {
-            ClickToElementByJS(elementName);
+            clickToElementByJS(elmtName);
         }
         catch (Exception ex)
         {
@@ -73,11 +79,59 @@ public class SeleniumFunctions{
         return Clicked;
     }
 	
-	public void ClickToElementByJS(String elementName)
+	public Boolean clickDynamicElement(String elmtName, String replacedBy)throws Exception
+    {
+        Boolean Clicked = false;
+        try
+        {
+            WebElement element = getElementDynamically(elmtName, replacedBy);
+            element.click();
+            Clicked = true;
+        }
+        catch (ElementNotVisibleException ex)
+        {
+            LOGGER.info("Element:" + elmtName + " is not visible/present on this page.Exception Description:" + ex.getMessage());
+            throw new Exception("Element:" + elmtName + " is not visible/present on this page");
+        }
+        catch (StaleElementReferenceException ex)
+        {
+            LOGGER.info("Element:" + elmtName + " is no longer present on this page.Exception Description:" + ex.getMessage());
+            throw new Exception("Element:" + elmtName + " is no longer present on this page");
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Exception while clicking dynamic element:" + ex.getMessage());
+            throw new Exception("Exception while clicking dynamic element:" + ex.toString());
+        }
+        return Clicked;
+    }
+	
+	
+	
+	public Boolean clickDynamicElementByJS(String elmtName, String replacedBy)throws Exception
+    {
+        Boolean Clicked = false;
+        try
+        {
+            JavascriptExecutor ex = (JavascriptExecutor)driver;
+            WebElement element = getElementDynamically(elmtName, replacedBy);
+            ex.executeScript("arguments[0].click();", element);
+            Clicked = true;
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Exception while clicking dynamic element by JS:" + ex.getMessage());
+            throw new Exception("Exception while clicking dynamic element by JS:" + ex.toString());
+        }
+        return Clicked;
+    }
+	
+	
+	public void clickToElementByJS(String elmtName)
     {
         WebElement element = null;
 		try {
-			element = GetElement(elementName);
+			element = getElement(elmtName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,220 +139,418 @@ public class SeleniumFunctions{
         JavascriptExecutor js = (JavascriptExecutor) driver;  
         js.executeScript("arguments[0].click();", element);        
     }
-	 
-	public LocatorType LocatorTypeName(String elementName)
-	{
-		LocatorType locatorType = BaseVariables.getInstance().GetPageList().get("LoginPage").getLocatorList().get(elementName).getLocatorType();
-		return locatorType;
-	}
-	public WebElement GetElement(String elementName) throws Exception
+	
+	public String GetElementAttribute(String elmtName, String attributeName) throws Exception
     {
-        WebElement element = null;
-		
+        String value = "";
         try
         {
-        	LocatorValue = BaseVariables.getInstance().GetPageList().get("LoginPage").getLocatorList().get(elementName).getLocatorValue();
-        	element = FindElement(LocatorTypeName(elementName), LocatorValue);
+            WebElement El = getElement(elmtName);
+            Thread.sleep(4000);
+            //add wait here
+//            WaitForPageToLoad();
+            value = El.getAttribute(attributeName);            
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error while fetching value of element:" + elmtName + ".Error occured is:" + ex.getMessage());
+        }
+        return value;
+    }
+	
+	public String GetElementText(String elmtName, String attributeName) throws Exception
+    {
+        String value = "";
+        try
+        {
+            WebElement El = getElement(elmtName);
+            Thread.sleep(4000);
+            //add wait here
+//            WaitForPageToLoad();
+            value = El.getText();
+            
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error while fetching value of element:" + elmtName + ".Error occured is:" + ex.getMessage());
+        }
+        return value;
+    }
+	
+	public LocatorType locatorTypeName(String elmtName)
+	{
+		LocatorType locatorType = BaseVariables.getInstance().GetPageList().get("LoginPage").getLocatorList().get(elmtName).getLocatorType();
+		return locatorType;
+//		
+	}	 
+	public WebElement getElement(String elmtName) throws Exception
+    {
+        WebElement element = null;
+        try
+        {
+        	LocValue = BaseVariables.getInstance().GetPageList().get("LoginPage").getLocatorList().get(elmtName).getLocatorValue();
+        	element = FindElement(locatorTypeName(elmtName), LocValue);
 
         }
         catch (NoSuchElementException ex)
         {
-        	assertUtils.fail(ex.getMessage());
-        	
-        	LOGGER.info("Unable to find element:" + elementName + "Exception:" + ex);
-            throw new Exception("Unable to Find Element:" + elementName);
+        	LOGGER.info("Unable to find the element" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element" + elmtName);
         }
         catch (ElementNotSelectableException ex)
         {
-        	AssertUtils.getInstance().fail(ex.getMessage());
-            LOGGER.info("Unable to select element:" + elementName + "Exception:" + ex);
-            throw new Exception("Unable to select element:" + elementName);
+            LOGGER.info("Unable to select element:" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Unable to select element:" + elmtName);
         }
         catch (ElementNotVisibleException ex)
         {
-        	AssertUtils.getInstance().fail(ex.getMessage());
-            LOGGER.info("Element is not visible:" + elementName + "Exception:" + ex);
-            throw new Exception("Element is not visible:" + elementName);
+            LOGGER.info("Element is not visible:" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Element is not visible:" + elmtName);
         }
         catch (TimeoutException ex)
         {
-        	AssertUtils.getInstance().fail(ex.getMessage());
-            LOGGER.info("Timeout Issue while finding element:" + elementName + "Exception:" + ex);
-            throw new Exception("Timeout Issue while finding element:" + elementName);
+            LOGGER.info("Timeout Error while finding element:" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Timeout Error while finding element:" + elmtName);
         }
         catch (StaleElementReferenceException ex)
         {
-        	org.junit.Assert.fail(ex.getMessage());
-            LOGGER.info("Stale Element Exceltion occured for element:" + elementName + "Exception:" + ex);
-            throw new Exception("Stale Element Exceltion occured for element:" + elementName);
+            LOGGER.info("Stale Element:" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Stale Element:" + elmtName);
         }
         catch (Exception ex)
         {
-        	AssertUtils.getInstance().fail(ex.getMessage());
-            LOGGER.info("Unable to find element:" + elementName + "Exception:" + ex);
-            throw new Exception("Unable to find element:" + elementName + "Exception:" + ex);
+            LOGGER.info("Unable to find the element" + elmtName + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element" + elmtName + "Exception Description:" + ex);
         }
 
         return element;
     }
 	
-	protected WebElement FindElement(LocatorType locatorType, String locatorValue) throws Exception
+	protected WebElement FindElement(LocatorType locType, String locValue) throws Exception
     {
-        WebElement ele = null;
+        WebElement elmt = null;
         try
         {                
-            switch (locatorType)
+            switch (locType)
             {
                 case XPath:
-                    if (IsElementPresent(By.xpath(locatorValue)))
+                    if (isElementPresent(By.xpath(locValue)))
                     {
-                    	ele = driver.findElement(By.xpath(locatorValue));
+                    	elmt = driver.findElement(By.xpath(locValue));
                     }
 
                     break;
                 case ID:
-                    if (IsElementPresent(By.id(locatorValue)))
+                    if (isElementPresent(By.id(locValue)))
                     {
-                    	ele = driver.findElement(By.id(locatorValue));
+                    	elmt = driver.findElement(By.id(locValue));
                     }
 
                     break;
                 case TagName:
-                    if (IsElementPresent(By.tagName(locatorValue)))
+                    if (isElementPresent(By.tagName(locValue)))
                     {
-                    	ele = driver.findElement(By.tagName(locatorValue));
+                    	elmt = driver.findElement(By.tagName(locValue));
                     }
 
                     break;
                 case Name:
 	                {
-	                	ele = driver.findElement(By.name(locatorValue));
-	                	 if (IsElementPresent(By.name(locatorValue)))
+	                	elmt = driver.findElement(By.name(locValue));
+	                	 if (isElementPresent(By.name(locValue)))
 	                     {
-	                     	ele = driver.findElement(By.name(locatorValue));
+	                     	elmt = driver.findElement(By.name(locValue));
 	                     }
 	                }                  
 
                     break;
                 case ClassName:
-                    if (IsElementPresent(By.className(locatorValue)))
+                    if (isElementPresent(By.className(locValue)))
                     {
-                    	ele = driver.findElement(By.className(locatorValue));
+                    	elmt = driver.findElement(By.className(locValue));
                     }
 
                     break;
                 case LinkText:
-                    if (IsElementPresent(By.linkText(locatorValue)))
+                    if (isElementPresent(By.linkText(locValue)))
                     {
-                    	ele = driver.findElement(By.linkText(locatorValue));
+                    	elmt = driver.findElement(By.linkText(locValue));
                     }
 
                     break;
                 case CssSelector:
-                    if (IsElementPresent(By.cssSelector(locatorValue)))
+                    if (isElementPresent(By.cssSelector(locValue)))
                     {
-                    	ele = driver.findElement(By.cssSelector(locatorValue));                    }
+                    	elmt = driver.findElement(By.cssSelector(locValue));                    }
 
                     break;
             }
         }
         catch (NoSuchElementException ex)
         {
-            LOGGER.info("Unable to find element:" + ele + "Exception:" + ex);
-            throw new Exception("Unable to Find Element:" + ele);
+            LOGGER.info("Unable to find the element" + elmt + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element" + elmt);
         }
-        return ele;
+        return elmt;
     }
 	
-	public void SendKeysToElement(String elementName, String text, Boolean clearAndSend, String ValToUpdate) throws Exception
+	protected Set<WebElement> FindElements(LocatorType locType, String locValue)throws Exception
     {
-        WebElement El;
+		Set<WebElement> elmt = null;
         try
         {
-        	if(!ValToUpdate.isEmpty())
+            switch (locType)
             {
-                El = GetDynamicElement(elementName, ValToUpdate);
+                case XPath:
+                    if (isElementPresent(By.xpath(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.xpath(locValue));
+                    }
+
+                    break;
+                case ID:
+                    if (isElementPresent(By.id(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.id(locValue));
+                    }
+
+                    break;
+                case TagName:
+                    if (isElementPresent(By.tagName(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.tagName(locValue));
+                    }
+
+                    break;
+                case Name:
+                    if (isElementPresent(By.name(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.name(locValue));
+                    }
+
+                    break;
+                case ClassName:
+                    if (isElementPresent(By.className(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.className(locValue));
+                    }
+
+                    break;
+                case LinkText:
+                    if (isElementPresent(By.linkText(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.linkText(locValue));
+                    }
+
+                    break;
+                case CssSelector:
+                    if (isElementPresent(By.cssSelector(locValue)))
+                    {
+                        elmt = (Set<WebElement>) driver.findElements(By.cssSelector(locValue));
+                    }
+
+                    break;
+            }
+        }
+        catch (NoSuchElementException ex)
+        {
+            LOGGER.info("Unable to find the element" + elmt + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element" + elmt);
+        }
+        return elmt;
+    }
+	
+	public void sendKeysToElement(String elmtName, String text, Boolean clearExistingText, String replacedBy) throws Exception
+    {
+		
+		driver.get("https://activate-qt.gs1.org/login");
+        WebElement El;
+//      add wait here
+        try
+        {
+        	if(!replacedBy.isEmpty())
+            {
+                El = getElementDynamically(elmtName, replacedBy);
             }                    
             else
             {
-                El = GetElement(elementName);
+                El = getElement(elmtName);
             }
-            if (clearAndSend)
+//          add wait here
+            if (clearExistingText)
             {
+              
                 El.clear();
             }
             El.sendKeys(text);
-            Thread.sleep(1000);
+            Thread.sleep(4000);
+//            add wait here for page load
         }
         catch (Exception ex)
         {
-        	Allure.addAttachment("Issue while inputting '" + text, "' in element:" + elementName + " .Error occured is:" + ex);
-        	LOGGER.info("Issue while inputting '" + text + "' in element:" + elementName + " .Error occured is:" + ex);
-            throw new Exception("Issue while inputting '" + text + "' in element:" + elementName);
+        	LOGGER.info("Error occured while entering '" + text + "' in element:" + elmtName + " .Error occured is:" + ex);
+            throw new Exception("Error occured while entering '" + text + "' in element:" + elmtName);
         }
     }
 	
-	public void NavigateToURL(String URL) throws Exception
+	
+	
+	public Boolean NavigateToURL(String URL) throws Exception
 	   {
+		Boolean IsNavigationSuccess = false;
 	       try
 	       {
 	    	   driver.get(URL);
 	    	   LOGGER.info("Navigating to URL:" + URL);
 	           driver.manage().window().maximize();
+	           IsNavigationSuccess = true;
 	       }
+	       catch (UnhandledAlertException Ex)
+	        {
+	            handleAlert();
+	        }
 	       catch (Exception e)
 	       {
 	           LOGGER.info("Navigation to URL " + URL + " failed due to " + e.getMessage());
 	           throw new Exception("Navigation to URL " + URL + " failed due to " + e.getMessage());
 	       }
+	       return IsNavigationSuccess;
 	   }
 	
-	public WebElement GetDynamicElement(String elementName, String valuetoreplace) throws Exception
+	public void scrollTo(String length)
+    {
+        
+    
+        JavascriptExecutor javaScriptExecutor = (JavascriptExecutor)driver;
+        javaScriptExecutor.executeAsyncScript("window.scrollBy(0,"+ length+")");
+        
+    }
+	
+	public void openNewWindow()throws Exception
+    {
+		JavascriptExecutor javaScriptExecutor = (JavascriptExecutor)driver;
+        javaScriptExecutor.executeAsyncScript("window.open()");
+    }
+		
+	public WebElement getElementDynamically(String elmtName, String valuetoreplace) throws Exception
     {
         WebElement element = null;
         try
         {
-        	element = FindElement(LocatorTypeName(elementName), LocatorValue);
+        	element = FindElement(locatorTypeName(elmtName), LocValue);
         }
         catch (NoSuchElementException ex)
         {
-            LOGGER.info("Unable to find element:" + elementName + " Exception:" + ex);
-            throw new Exception("Unable to Find Element: " + elementName);
+            LOGGER.info("Unable to find the element" + elmtName + " Exception Description:" + ex);
+            throw new Exception("Unable to find the element " + elmtName);
         }
         catch (ElementNotSelectableException ex)
         {
-            LOGGER.info("Unable to select element: " + elementName + " Exception:" + ex);
-            throw new Exception("Unable to select element: " + elementName);
+            LOGGER.info("Unable to select element: " + elmtName + " Exception Description:" + ex);
+            throw new Exception("Unable to select element: " + elmtName);
         }
         catch (ElementNotVisibleException ex)
         {
-            LOGGER.info("Element: " + elementName + " is not visible.Exception:" + ex);
-            throw new Exception("Element: " + elementName + " is not visible.");
+            LOGGER.info("Element: " + elmtName + " is not visible.Exception Description:" + ex);
+            throw new Exception("Element: " + elmtName + " is not visible.");
         }
         catch (TimeoutException ex)
         {
-            LOGGER.info("Timeout Issue while finding element: " + elementName + "Exception:" + ex);
-            throw new Exception("Timeout Issue while finding element: " + elementName);
+            LOGGER.info("Timeout Error while finding element: " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Timeout Error while finding element: " + elmtName);
         }
         catch (StaleElementReferenceException ex)
         {
-            LOGGER.info("Stale Element Exceltion occured for element: " + elementName + "Exception:" + ex);
-            throw new Exception("Stale Element Exceltion occured for element: " + elementName);
+            LOGGER.info("Stale Element: " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Stale Element: " + elmtName);
         }
         catch (Exception ex)
         {
-            LOGGER.info("Unable to find element: " + elementName + "Exception:" + ex);
-            throw new Exception("Unable to find element: " + elementName + "Exception:" + ex);
+            LOGGER.info("Unable to find the element " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element " + elmtName + "Exception Description:" + ex);
         }
         return element;
     }
+	/*public Set<WebElement> GetElementSetDynamically(String elmtName, String valuetoreplace) throws Exception
+    {
+		Set<WebElement> element = null;
+        try
+        {
+//            String LocValue = Helper.UpdateXPathWithOriginalVal(StepBase.getInstance().PageList[PageName].LocatorList[elmtName].LocValue, valuetoreplace);
+//            element = FindElements(StepBase.getInstance().PageList[PageName].LocatorList[elmtName].LocatorType, LocValue);
+            element = (Set<WebElement>) FindElement(LocatorTypeName(elmtName), LocValue);
+        }
+        catch (NoSuchElementException ex)
+        {
+            LOGGER.info("Unable to find elements:" + elmtName + " Exception Description:" + ex);
+            throw new Exception("Unable to Find Elements: " + elmtName);
+        }
+        catch (ElementNotSelectableException ex)
+        {
+            LOGGER.info("Unable to select elements: " + elmtName + " Exception Description:" + ex);
+            throw new Exception("Unable to select elements: " + elmtName);
+        }
+        catch (ElementNotVisibleException ex)
+        {
+            LOGGER.info("Element: " + elmtName + " is not visible.Exception Description:" + ex);
+            throw new Exception("Element: " + elmtName + " is not visible.");
+        }
+        catch (TimeoutException ex)
+        {
+            LOGGER.info("Timeout Error while finding element: " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Timeout Error while finding element: " + elmtName);
+        }
+        catch (StaleElementReferenceException ex)
+        {
+            LOGGER.info("Stale Element: " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Stale Element: " + elmtName);
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Unable to find the element " + elmtName + "Exception Description:" + ex);
+            throw new Exception("Unable to find the element " + elmtName + "Exception Description:" + ex);
+        }
+        return (Set<WebElement>) element;
+    }
 	
-	private Boolean IsElementPresent(By by)
+	public void WaitForPageToLoad()throws Exception
+    {
+        wait = new WebDriverWait(driver, 10);
+        TimeSpan timeout = new TimeSpan(0, 0, 30);
+
+        JavascriptExecutor javascript = (JavascriptExecutor)driver;
+        if (javascript == null)
+            throw new ArgumentException("driver", "Driver must support javascript execution");
+
+        wait.Until((d) =>
+        {
+            try
+            {
+                String readyState = javascript.ExecuteScript(
+                "if (document.readyState) return document.readyState;").toString();
+                return readyState.toLowerCase() == "complete";
+            }
+            catch (InvalidOperationException e)
+            {
+                //Window is no longer available
+                return e.Message.ToLower().Contains("unable to get browser");
+            }
+            catch (WebDriverException e)
+            {
+                //Browser is no longer available
+                return e.Message.ToLower().Contains("unable to connect");
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        });
+    }*/
+	private Boolean isElementPresent(By by)
     {
         try
         {
-        	
-        WebElement element =wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        	WebElement element =wait.until(ExpectedConditions.visibilityOfElementLocated(by));
             return  element.isDisplayed();
         }
         catch (Exception e)
@@ -307,4 +559,201 @@ public class SeleniumFunctions{
         }
     }
 	
+	
+	public void selectElementByText(String elmtName, String val) throws Exception
+    {
+        try
+        {
+            WebElement elm = getElement(elmtName);            
+            Select se = new Select(elm);
+            se.selectByVisibleText(val);
+        }
+        catch (NoSuchElementException ex)
+        {
+            LOGGER.info("Unable to find the element" + elmtName + ". Exception occured is:" + ex.getMessage());
+            throw new Exception("Unable to find the element " + elmtName + ".");
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Unable to find the element" + elmtName + ". Exception occured is:" + ex.getMessage());
+            throw new Exception("Unable to find the element " + elmtName + ".");
+        }
+    }
+
+    public void switchToNewWindow()
+    {
+    	Set<String> allWindowHandles = driver.getWindowHandles();
+    	for(String handle : allWindowHandles)        
+        {
+            driver.switchTo().window(handle);
+        }
+    }
+	
+    public Boolean SwitchToFrame(String framename)
+    {
+        Boolean IsSwitched = false;
+        try
+        {
+            //wait = Browser.wait;
+            driver.switchTo().frame(framename);
+            IsSwitched = true;
+        }
+        catch(Exception ex)
+        {
+            LOGGER.info("Unable to switch frame" + ex.getMessage());
+        }
+        return IsSwitched;
+    }
+
+    public Boolean SwitchToFrame(int frameIndex)throws Exception
+    {
+        Boolean IsSwitched = false;
+        try
+        {
+            //wait = Browser.wait;
+            driver.switchTo().frame(frameIndex);
+            IsSwitched = true;
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Unable to switch frame" + ex.getMessage());
+        }
+        return IsSwitched;
+    }
+
+    public void switchToDefaultFrame()throws Exception
+    {
+        try
+        {
+            //wait = Browser.wait;
+            driver.switchTo().defaultContent();
+        }
+        catch (Exception ex)
+        {
+            LOGGER.info("Unable to switch to the parent frame" + ex.getMessage());
+        }
+    }
+    public Boolean verifyTitle(String ExpTitle)
+    {
+        Boolean titleMatched = false;
+        try
+        {
+        	
+            if (driver.getTitle().contains(ExpTitle))
+            {
+                titleMatched = true;
+            }
+            Assert.assertTrue(titleMatched);
+            
+        }
+        catch (Exception ex)
+        {
+            Assert.fail("Unable to verify title: Exception" + ex.getMessage());
+        }
+        return titleMatched;
+    }
+
+    public Boolean checkElementVisibility(String ElmName) throws Exception
+    {
+        Boolean IsVisible = false;
+        try
+        {
+            WebElement elm = getElement(ElmName);
+            IsVisible = elm.isDisplayed();
+        }
+        catch (ElementNotVisibleException ex)
+        {
+            IsVisible = false;
+        }
+        
+        return IsVisible;
+    }
+    
+    
+    
+    public WebElement focusElement(String element) throws Exception
+    {
+        WebElement elmtName = getElement(element);
+        Actions actions = new Actions(driver);
+        actions.moveToElement(elmtName);
+        actions.perform();
+        return elmtName;
+    }
+    public WebElement focusElementAndClick(String element) throws Exception
+    {
+        WebElement elmtName = getElement(element);
+        Actions actions = new Actions(driver);
+        actions.moveToElement(elmtName).click();
+        actions.perform();
+        return elmtName;
+    }
+
+    public WebElement doubleClickElement(String element) throws Exception
+    {
+        WebElement elmtName = getElement(element);
+        Actions actions = new Actions(driver);
+        actions.doubleClick(elmtName);
+        actions.perform();
+
+        return elmtName;
+    }
+    
+   
+    public WebElement scrollElementToCenterView(String elmtName) throws Exception
+    {
+        WebElement element = getElement(elmtName);
+        JavascriptExecutor javaScriptExecutor = (JavascriptExecutor)driver;
+        javaScriptExecutor.executeAsyncScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        return element;
+    }
+
+    public WebElement scrollToElement(String elmtName) throws Exception
+    {
+        WebElement element = getElement(elmtName);
+        JavascriptExecutor javaScriptExecutor = (JavascriptExecutor)driver;
+        javaScriptExecutor.executeAsyncScript("arguments[0].scrollIntoView(false);", element);
+        return element;
+    }
+    
+    public void RefreshBrowser()
+    {
+       driver.navigate().refresh();
+    }
+    public Boolean handleAlert()throws Exception
+    {
+        Boolean IsHandled = false;
+        try
+        {
+            Alert myAlert = driver.switchTo().alert();
+            myAlert.accept();
+            IsHandled = true;
+        }
+        catch(Exception ex)
+        {
+            LOGGER.info("Unable to handle the alert");
+        }
+        return IsHandled;
+    }
+    
+    public Boolean isAlertPresent()
+    {
+        try
+        {
+        	driver.switchTo().alert();
+            return true;
+        }   
+        catch (NoAlertPresentException Ex)
+        {
+            return false;
+        }   
+    }
+    
+    public Boolean VerifyPageUrl(String URL)
+    {
+        return driver.getCurrentUrl().contains(URL);
+
+    }
+
+    
+    
 }
