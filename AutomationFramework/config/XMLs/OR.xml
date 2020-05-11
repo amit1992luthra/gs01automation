@@ -8,7 +8,24 @@
  
  <Page name="HomePage">
    <Locator name ="button" Type ="XPath" Value ="//input[@name='username']"/>
+   <Locator name ="AddUser" Type ="XPath" Value ="//a[text()=' + Add user ']"/>
   
+ </Page>
+ 
+ <Page name="AddUser">
+  	<Locator name ="firstName" Type ="XPath" Value ="//*[text()='First name']/parent::div/following::div/input']"/>
+    <Locator name ="lastName" Type ="XPath" Value ="//*[text()='Last name']/parent::div/following::div/input']"/>
+  	<Locator name ="emailAddress" Type ="XPath" Value ="//*[text()='Email address']/parent::div/following::div/input"/>
+  	<Locator name ="companyName" Type ="XPath" Value ="//*[text()='Company name']/parent::div/following::div/input"/>
+  	<Locator name ="companyNamedropdown" Type ="XPath" Value ="//span[text()=' abc limited ']"/>
+  	<Locator name ="saveButton" Type ="XPath" Value ="//button[text()='Save']"/>
+  	<Locator name ="popuptitle" Type ="XPath" Value ="//div[@class='v-card__title']"/>
+  	<Locator name ="viewExistingUser" Type ="XPath" Value ="//small[text()='View existing user']"/>
+  	<Locator name ="editUser" Type ="XPath" Value ="//div[@class='v-btn__content']"/>
+  	
+  	
+  	
+  		
  </Page>
  
  

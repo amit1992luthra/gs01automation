@@ -22,6 +22,7 @@ import com.core.WebDriverUtils;
 import com.seleniumFuctions.SeleniumFunctions;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
  import cucumber.api.java.en.Then;
  import cucumber.api.java.en.When;
@@ -66,8 +67,8 @@ import io.qameta.allure.Story;
 	 System.out.println(ScenarioContext.getScenarioContext("GivenTestKey"));
 	 try {
 		 LoadApplication();
-		Page("LoginPage").SendKeysToElement("username", username, true, "");
-		Page("LoginPage").SendKeysToElement("passwor", password, true, "");
+		Page("LoginPage").sendKeysToElement("username", username, false, "");
+		Page("LoginPage").sendKeysToElement("password", password, false, "");
 	} 
 	 catch (Exception e) {
 		e.printStackTrace();
@@ -78,12 +79,22 @@ import io.qameta.allure.Story;
  public void user_clicks_on_login_button() 
  {
 	 try {
-	Page("LoginPage").ClickElement("submit");
+	Page("LoginPage").clickElement("submit");
 	 }
 	 catch(Exception ex) {
 	 }
  }
-
+ 
+ //And user click on Add user Link
+ @And("^user click on Add user Link$")
+ public void user_clicks_on_Add_User_button() 
+ {
+	 try {
+	Page("HomePage").clickElement("AddUser");
+	 }
+	 catch(Exception ex) {
+	 }
+ }
 
  
 
